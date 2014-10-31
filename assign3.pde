@@ -1,11 +1,11 @@
 int[][] slot;
-boolean[][] flagSlot;
-int bombCount;
-int clickCount;
-int flagCount;
-int nSlot;
-int totalSlots;
-final int SLOT_SIZE = 100;
+boolean[][] flagSlot; // use for flag
+int bombCount; // 共有幾顆炸彈
+int clickCount; // 共點了幾格
+int flagCount; // 共插了幾支旗
+int nSlot; // 分割 nSlot*nSlot格
+int totalSlots; // 總格數
+final int SLOT_SIZE = 100; //每格大小
 
 int sideLength; // SLOT_SIZE * nSlot
 int ix; // (width - sideLength)/2
@@ -39,7 +39,7 @@ void setup(){
 
   nSlot = 4;
   totalSlots = nSlot*nSlot;
-
+  // 初始化二維陣列
   slot = new int[nSlot][nSlot];
   
   sideLength = SLOT_SIZE * nSlot;
