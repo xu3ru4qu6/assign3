@@ -25,6 +25,7 @@ final int SLOT_BOMB = 2;
 final int SLOT_FLAG = 3;
 final int SLOT_FLAG_BOMB = 4;
 final int SLOT_DEAD = 5;
+final int BOMB_OFF = 6;
 
 PImage bomb, flag, cross ,bg;
 
@@ -67,6 +68,10 @@ void draw(){
           break;
     case GAME_RUN:
           //---------------- put you code here ----
+ 
+    if (clickCount == totalSlots - bombCount){
+      gameState = GAME_WIN;
+    }    
 
           // -----------------------------------
           break;
@@ -85,7 +90,21 @@ void draw(){
 
 int countNeighborBombs(int col,int row){
   // -------------- Requirement B ---------
-  return 0;
+  
+  int count = 0;
+  
+  for (int r = 0 ; r < nSlot ; r++){
+    for (int l = 0 ; l < nSlot ; l++){
+      if( r + 1 == col || r - 1 == col || r == col ){
+        if( l + 1 == row || l - 1 == row || l == row ){
+          if( slot[r][l] == SLOT_BOMB )
+            count++;
+        }
+      }
+    }
+  }
+  
+  return count;
 }
 
 void setBombs(){
@@ -97,7 +116,17 @@ void setBombs(){
   }
   // -------------- put your code here ---------
   // randomly set bombs
-
+  
+  for (int n = 1 ; n <= bombCount ; n++){
+    int bX = (int)random(4);
+    int bY = (int)random(4);
+    
+    if (slot[bX][bY] == SLOT_OFF){
+      slot[bX][bY] = SLOT_BOMB;  
+    }else{
+      n -= 1;
+    }  
+  }
   // ---------------------------------------
 }
 
@@ -146,6 +175,11 @@ void showSlot(int col, int row, int slotState){
           rect(x,y,SLOT_SIZE,SLOT_SIZE);
           image(bomb,x,y,SLOT_SIZE,SLOT_SIZE);
           break;
+    case BOMB_OFF:
+         fill(222,119,15);
+         stroke(0);
+         rect(x, y, SLOT_SIZE, SLOT_SIZE);
+         break;
   }
 }
 
@@ -173,11 +207,22 @@ void mousePressed(){
        mouseX >= ix && mouseX <= ix+sideLength && 
        mouseY >= iy && mouseY <= iy+sideLength){
     
-    // --------------- put you code here -------     
-
-    // -------------------------
+    // --------------- put you code here -------  
     
+    int mc = (mouseX - ix)/ SLOT_SIZE;
+    int mr = (mouseY - iy)/ SLOT_SIZE;
+    
+    if(slot[mc][mr] == SLOT_BOMB){
+      showSlot(mc,mr, SLOT_DEAD);
+      slot[mc][mr] = SLOT_DEAD;
+      gameState = GAME_LOSE;
+
+    }else if(slot[mc][mr] == SLOT_OFF){
+      showSlot(mc, mr, SLOT_SAFE);
+      slot[mc][mr] = SLOT_SAFE;
+      clickCount++;
   }
+ }
 }
 
 // press enter to start
